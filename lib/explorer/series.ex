@@ -41,6 +41,7 @@ defmodule Explorer.Series do
   defguardp numeric_dtype?(dtype) when K.in(dtype, [:float, :integer])
   defguardp numeric_or_bool_dtype?(dtype) when K.in(dtype, [:float, :integer, :boolean])
   defguardp numeric_or_date_dtype?(dtype) when K.in(dtype, [:float, :integer, :date, :datetime])
+  defguardp numeric_or_string_dtype?(dtype) when K.in(dtype, [:float, :integer, :string])
 
   @impl true
   def fetch(series, idx) when is_integer(idx), do: {:ok, fetch!(series, idx)}
@@ -1253,14 +1254,38 @@ defmodule Explorer.Series do
 
       iex> s = Explorer.Series.from_list([1, 2, 2, 3])
       iex> Explorer.Series.mode(s)
-      2
+      #Explorer.Series<
+        Polars[1]
+        integer [2]
+      >
+
+      iex> s = Explorer.Series.from_list([1, 2, 3, 4])
+      iex> Explorer.Series.mode(s)
+      #Explorer.Series<
+        Polars[4]
+        integer [1, 2, 3, 4]
+      >
+
+      iex> s = Explorer.Series.from_list([1, 1, 2, 2])
+      iex> Explorer.Series.mode(s)
+      #Explorer.Series<
+        Polars[2]
+        integer [1, 2]
+      >
+
+      iex> s = Explorer.Series.from_list(["a", "b", "b", "c"])
+      iex> Explorer.Series.mode(s)
+      #Explorer.Series<
+        Polars[1]
+        string ["b"]
+      >
   """
   @doc type: :aggregation
-  @spec mode(series :: Series.t()) :: number() | nil
-  def mode(%Series{dtype: dtype} = series) when numeric_dtype?(dtype),
+  @spec mode(series :: Series.t()) :: Series.t() | nil
+  def mode(%Series{dtype: dtype} = series) when numeric_or_string_dtype?(dtype),
     do: Shared.apply_impl(series, :mode)
 
-  def mode(%Series{dtype: dtype}), do: dtype_error("mode/1", dtype, [:integer, :float])
+  def mode(%Series{dtype: dtype}), do: dtype_error("mode/1", dtype, [:integer, :float, :string])
 
   @doc """
   Gets the median value of the series.

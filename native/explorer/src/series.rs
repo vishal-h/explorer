@@ -881,10 +881,7 @@ pub fn s_trim_trailing(data: ExSeries) -> Result<ExSeries, ExplorerError> {
 }
 
 #[rustler::nif(schedule = "DirtyCpu")]
-pub fn s_mode(env: Env, data: ExSeries) -> Result<Term, ExplorerError> {
+pub fn s_mode(data: ExSeries) -> Result<ExSeries, ExplorerError> {
     let s = &data.resource.0;
-    match s.dtype() {
-        DataType::UInt32 | DataType::Int64 | DataType::Float64 => Ok(s.mode()?.encode(env)),
-        dt => panic!("mode/1 not implemented for {:?}", dt),
-    }
+    Ok(ExSeries::new(s.mode()?))
 }
