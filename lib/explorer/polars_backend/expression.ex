@@ -40,6 +40,7 @@ defmodule Explorer.PolarsBackend.Expression do
     mean: 1,
     median: 1,
     min: 1,
+    mode: 1,
     multiply: 2,
     n_distinct: 1,
     nil_count: 1,

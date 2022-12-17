@@ -192,6 +192,7 @@ defmodule Explorer.PolarsBackend.Native do
   def s_mean(_s), do: err()
   def s_median(_s), do: err()
   def s_min(_s), do: err()
+  def s_mode(_s), do: err()
   def s_multiply(_s, _other), do: err()
   def s_n_chunks(_s), do: err()
   def s_n_distinct(_s), do: err()
